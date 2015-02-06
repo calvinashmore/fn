@@ -5,11 +5,23 @@
  */
 package com.icosilune.fn;
 
+import java.lang.reflect.Type;
+
 /**
  *
  * @author ashmore
  */
-public class FnType<T> {
+public class FnType {
+
+  Type type;
+
+  public static FnType fromString(String s) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean isIterable() {
+    throw new UnsupportedOperationException();
+  }
 
   // T is class
   // ****** there is java reflect Type which may be better than this

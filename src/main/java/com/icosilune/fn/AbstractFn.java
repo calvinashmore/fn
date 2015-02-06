@@ -26,6 +26,6 @@ public abstract class AbstractFn {
    * ******* what if the output type is a map?
    * ** Also, how do we know the names ahead of time?
    */
-  public abstract Map<String, FnType> evaluateWrapper(
+  public abstract Map<String, Object> evaluateWrapper(
           EvaluationContext context, Map<String, Object> args);
 }

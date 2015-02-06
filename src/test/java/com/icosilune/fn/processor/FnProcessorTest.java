@@ -25,24 +25,28 @@ public class FnProcessorTest {
   @Test
   public void testSimpleFn() {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines(
-        "foo.bar.Baz",
+        "foo.bar.Add",
         "package foo.bar;",
         "",
+        "import com.icosilune.fn.AbstractFn;",
         "import com.icosilune.fn.Fn;",
+        "import java.util.List;",
         "",
         "@Fn",
-        "public abstract class Baz {",
-        "  public abstract int buh();",
+        "public abstract class Add extends AbstractFn {",
+        "  public double evaluate(double x, double y) {",
+        "    return x + y;",
+        "  }",
         "",
 //        "  public static Baz create(int buh) {",
 //        "    return new AutoValue_Baz(buh);",
 //        "  }",
         "}");
     JavaFileObject expectedOutput = JavaFileObjects.forSourceLines(
-        "foo.bar.Fn_Baz",
+        "foo.bar.Add_Fn",
 //        "hello"
         "package foo.bar;",
-        "class Fn_Baz {}"
+        "class Fn_Add {}"
 //        "",
 //        "import javax.annotation.Generated;",
 //        "",
@@ -84,11 +88,15 @@ public class FnProcessorTest {
 //        "}"
     );
 
-//    assertAbout(javaSource())
-//        .that(javaFileObject)
-//        .processedWith(new FnProcessor())
-//        .compilesWithoutError()
+    FnProcessor fnProcessor = new FnProcessor();
+
+    assertAbout(javaSource())
+        .that(javaFileObject)
+        .processedWith(fnProcessor)
+        .compilesWithoutError()
+            ;
 //        .and()
 //        .generatesSources(expectedOutput);
+
   }
 }
