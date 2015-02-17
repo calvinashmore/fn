@@ -6,12 +6,15 @@
 package com.icosilune.fn.processor;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import com.icosilune.fn.Fn;
 import com.sun.istack.internal.Nullable;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -36,6 +39,8 @@ import javax.tools.JavaFileObject;
 @SupportedAnnotationTypes("com.icosilune.fn.Fn")
 public class FnProcessor extends AbstractProcessor {
 
+  private Multimap<String, String> packageToGeneratedTypes = HashMultimap.create();
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Fn.class);
@@ -44,15 +49,21 @@ public class FnProcessor extends AbstractProcessor {
       processType(type);
     }
 
+    if(roundEnv.processingOver()) {
+      // generate indices.
+      for(String packageName : packageToGeneratedTypes.keySet()) {
+        generateIndex(packageName, packageToGeneratedTypes.get(packageName));
+      }
+    }
+
     // supposedly we should return false, but dunno?
     return true;
   }
 
   private void processType(TypeElement type) {
 
-    // assert that type extends AbstractFn
-
     writeSourceFile(getGeneratedClassName(type), generateSource(type), type);
+    packageToGeneratedTypes.put(packageNameOf(type), getGeneratedClassName(type));
   }
 
   private String getGeneratedClassName(TypeElement type) {
@@ -124,41 +135,7 @@ public class FnProcessor extends AbstractProcessor {
     }
     sb.append("));\n");
     sb.append("  }\n");
-
-
-//    System.out.println("******"+type.getQualifiedName());
-////    processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, type.getQualifiedName());
-//    for (Element enclosedElement : type.getEnclosedElements()) {
-////      processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "enclosed: "+enclosedElement);
-//      System.out.println("enclosed: "+enclosedElement +" "+enclosedElement.asType()+ " "+enclosedElement.getKind()+" "+enclosedElement.getModifiers());
-////      System.out.println("        : "+enclosedElement.getEnclosedElements().size());
-////      System.out.println("        : "+enclosedElement.asType().);
-//      Elements elementUtils = processingEnv.getElementUtils();
-//      Types typeUtils = processingEnv.getTypeUtils();
-//
-//
-//      if(enclosedElement instanceof ExecutableElement) {
-//        ExecutableElement executableElement = (ExecutableElement) enclosedElement;
-//
-//
-//        for(VariableElement var : executableElement.getParameters()) {
-//          System.out.println(" -> "+var+" "+var.asType());
-//        }
-//        System.out.println(" returns: "+executableElement.getReturnType());
-//      }
-//    }
-//    processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, type.getQualifiedName());
-//    type.getQualifiedName();
-
-    // implement getOutputTypes
-    // ***** FOR NOW: only assume SINGLE output type.
-
-    // implement evaluateWrapper
     sb.append("}\n");
-
-    System.out.println("***** GENERATED CLASS");
-    System.out.println(sb);
-
 
     return sb.toString();
   }
@@ -183,16 +160,40 @@ public class FnProcessor extends AbstractProcessor {
     }
   }
 
-  private void writeSourceFile(String className, String text, TypeElement originatingType) {
+  private void writeSourceFile(String className, String text, TypeElement... originatingTypes) {
     try {
       JavaFileObject sourceFile =
-          processingEnv.getFiler().createSourceFile(className, originatingType);
+          processingEnv.getFiler().createSourceFile(className, originatingTypes);
       try (Writer writer = sourceFile.openWriter()) {
         writer.write(text);
+
+
+
+        System.out.println("***** GENERATED "+className+".java");
+        System.out.println(text);
+        System.out.println();
       }
     } catch (IOException e) {
       processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
           "Could not write generated class " + className + ": " + e);
     }
+  }
+
+  private void generateIndex(String packageName, Collection<String> classes) {
+    StringBuilder indexText = new StringBuilder();
+
+    indexText.append("package "+packageName+";\n");
+    indexText.append("\n");
+    indexText.append("import com.google.common.collect.ImmutableClassToInstanceMap;\n");
+    indexText.append("\n");
+    indexText.append("public class Fn_Index {\n");
+    indexText.append("  public static final ImmutableClassToInstanceMap INSTANCES = ImmutableClassToInstanceMap.builder()\n");
+    for(String instanceClass : classes) {
+      indexText.append("      .put("+instanceClass+".class, new "+instanceClass+"())\n");
+    }
+    indexText.append("      .build();\n");
+    indexText.append("}\n");
+
+    writeSourceFile(packageName+".Fn_Index", indexText.toString());
   }
 }

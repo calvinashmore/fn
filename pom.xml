@@ -37,5 +37,10 @@
       <artifactId>auto-service</artifactId>
       <version>1.0-rc2</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value</artifactId>
+      <version>1.0-rc2</version>
+    </dependency>
   </dependencies>
 </project>
