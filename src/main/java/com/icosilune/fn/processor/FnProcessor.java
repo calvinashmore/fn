@@ -107,6 +107,7 @@ public class FnProcessor extends AbstractProcessor {
     sb.append("  private static final String OUT1 = \"out\";\n");
     sb.append("  private static final ImmutableMap<String, FnType> OUTPUT_TYPES = \n");
     sb.append("      ImmutableMap.of(OUT1, FnType.fromString(\""+returnType+"\"));\n");
+    sb.append("  @Override\n");
     sb.append("  public Map<String, FnType> getOutputTypes() {return OUTPUT_TYPES;}\n");
     sb.append("\n");
 
@@ -116,8 +117,10 @@ public class FnProcessor extends AbstractProcessor {
       sb.append("      .put(\""+var.getSimpleName()+"\", FnType.fromString(\""+var.asType()+"\"))\n");
     }
     sb.append("      .build();\n");
+    sb.append("  @Override\n");
     sb.append("  public Map<String, FnType> getInputTypes() {return INPUT_TYPES;}\n");
     sb.append("\n");
+    sb.append("  @Override\n");
     sb.append("  public Map<String, Object> evaluateWrapper(\n");
     sb.append("          EvaluationContext context, Map<String, Object> args) {\n");
 
@@ -126,7 +129,7 @@ public class FnProcessor extends AbstractProcessor {
 //    for(VariableElement var : evaluateMethod.getParameters()) {
       sb.append("    "+var.asType()+" in"+i+" = ("+var.asType()+") args.get(\""+var.getSimpleName()+"\");\n");
     }
-    sb.append("    return ImmutableMap.of(OUT1, super.evaluate(");
+    sb.append("    return ImmutableMap.of(OUT1, (Object) super.evaluate(");
     for(int i=0;i<evaluateMethod.getParameters().size();i++) {
       if(i>0) {
         sb.append(", ");

@@ -5,23 +5,35 @@
  */
 package com.icosilune.fn;
 
+import com.google.auto.value.AutoValue;
 import java.lang.reflect.Type;
+import java.util.Objects;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  *
  * @author ashmore
  */
-public class FnType {
+@AutoValue
+public abstract class FnType {
 
-  Type type;
+  public abstract Type getType();
 
   public static FnType fromString(String s) {
-    throw new UnsupportedOperationException();
+    try {
+      Type type = Class.forName(s);
+      return new AutoValue_FnType(type);
+    } catch (ClassNotFoundException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   public boolean isIterable() {
-    throw new UnsupportedOperationException();
+    return false;
+//    throw new UnsupportedOperationException();
   }
+
+
 
   // T is class
   // ****** there is java reflect Type which may be better than this

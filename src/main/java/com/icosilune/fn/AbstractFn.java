@@ -28,4 +28,8 @@ public abstract class AbstractFn {
    */
   public abstract Map<String, Object> evaluateWrapper(
           EvaluationContext context, Map<String, Object> args);
+
+  public boolean isContextDependent() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }
