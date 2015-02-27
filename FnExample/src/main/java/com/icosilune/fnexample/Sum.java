@@ -15,15 +15,7 @@ import com.icosilune.fn.Fn;
 @Fn
 public abstract class Sum extends AbstractFn {
 
-//  public double evaluate(Iterable<Double> input) {
-//    double sum = 0;
-//    for(Double v : input) {
-//      sum += v;
-//    }
-//    return sum;
-//  }
-
-  public Double evaluate(Double x, Double y) {
+  public double evaluate(double x, double y) {
     return x + y;
   }
 }
