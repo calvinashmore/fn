@@ -19,7 +19,6 @@ public abstract class FnType {
   public abstract TypeToken<?> getType();
 
   public static FnType fromString(String s) {
-    TypeToken<?> token;
     return new AutoValue_FnType(new TypeParser().parse(s));
   }
 

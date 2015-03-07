@@ -7,6 +7,7 @@ package com.icosilune.fn.nodes;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import com.icosilune.fn.FnType;
 
 /**
  *
@@ -28,8 +29,7 @@ public abstract class Connection {
     Preconditions.checkNotNull(outSocket, "node %s does not contain input socket %s", outNode, outSocketName);
     Preconditions.checkArgument(inSocket.getSocketType() == Socket.SocketType.INPUT);
     Preconditions.checkArgument(outSocket.getSocketType() == Socket.SocketType.OUTPUT);
-    // this needs to be an "is assignable from" check.
-    Preconditions.checkArgument(inSocket.getType().equals(outSocket.getType()));
+    Preconditions.checkArgument(inSocket.getType().isAssignableFrom(outSocket.getType()));
 
     return new AutoValue_Connection(inNode, outNode, inSocket, outSocket);
   }
