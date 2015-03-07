@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>FnAnnotation</module>
-    <module>FnGenerator</module>
     <module>FnExample</module>
+    <module>FnNode</module>
   </modules>
 </project>
