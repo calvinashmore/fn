@@ -5,6 +5,8 @@
  */
 package com.icosilune.fnexample;
 
+import com.icosilune.fn.AbstractFn;
+import com.icosilune.fn.Fn;
 import com.icosilune.fn.FnType;
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
@@ -20,8 +22,16 @@ public class Temp {
   public void foo(Iterable<double[]> buh) {
   }
 
+  @Fn
+  public static abstract class Sum extends AbstractFn {
+
+    public double evaluate(double x, double y) {
+      return x + y;
+    }
+  }
+
   public static void main(String args[]) {
-    Sum_Fn sum = new Sum_Fn();
+    Fn_Temp_Sum sum = new Fn_Temp_Sum();
 
     NodeGraph graph = new NodeGraph();
 

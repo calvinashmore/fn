@@ -99,4 +99,34 @@ public class FnProcessorTest {
 //        .generatesSources(expectedOutput);
 
   }
+
+  @Test
+  public void testNestedFn() {
+    JavaFileObject javaFileObject = JavaFileObjects.forSourceLines(
+        "foo.bar.Misc",
+        "package foo.bar;",
+        "",
+        "import com.icosilune.fn.AbstractFn;",
+        "import com.icosilune.fn.Fn;",
+        "import java.util.List;",
+        "",
+        "public class Misc {",
+        "  @Fn",
+        "  public static abstract class Add extends AbstractFn {",
+        "    public double evaluate(double x, double y) {",
+        "      return x + y;",
+        "    }",
+        "  }",
+        "",
+        "}");
+
+    FnProcessor fnProcessor = new FnProcessor();
+
+    assertAbout(javaSource())
+        .that(javaFileObject)
+        .processedWith(fnProcessor)
+        .compilesWithoutError()
+            ;
+
+  }
 }

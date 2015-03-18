@@ -39,6 +39,8 @@ import javax.tools.JavaFileObject;
 @SupportedAnnotationTypes("com.icosilune.fn.Fn")
 public class FnProcessor extends AbstractProcessor {
 
+  private static final String PREFIX = "Fn_";
+
   private Multimap<String, String> packageToGeneratedTypes = HashMultimap.create();
 
   @Override
@@ -68,7 +70,16 @@ public class FnProcessor extends AbstractProcessor {
   }
 
   private String getGeneratedClassName(TypeElement type) {
-    return type.getSimpleName()+"_Fn";
+
+    String name = type.getSimpleName().toString();
+    while (type.getEnclosingElement() instanceof TypeElement) {
+      type = (TypeElement) type.getEnclosingElement();
+      name = type.getSimpleName() + "_" + name;
+    }
+//    String pkg = packageNameOf(type);
+//    String dot = pkg.isEmpty() ? "" : ".";
+//    return pkg + dot + PREFIX + name;
+    return PREFIX + name;
   }
 
   private String generateSource(TypeElement type) {
@@ -96,7 +107,8 @@ public class FnProcessor extends AbstractProcessor {
     }
 
     sb.append("\n");
-    sb.append("public class "+getGeneratedClassName(type)+" extends "+type.getSimpleName()+" {\n");
+    // TODO: complain if parent type is inner class but not static
+    sb.append("public class "+getGeneratedClassName(type)+" extends "+type.getQualifiedName()+" {\n");
 
     // implement getInputTypes
     ExecutableElement evaluateMethod = getMethod(type, "evaluate");
@@ -189,9 +201,10 @@ public class FnProcessor extends AbstractProcessor {
     indexText.append("package "+packageName+";\n");
     indexText.append("\n");
     indexText.append("import com.google.common.collect.ImmutableClassToInstanceMap;\n");
+    indexText.append("import com.icosilune.fn.AbstractFn;\n");
     indexText.append("\n");
     indexText.append("public class Fn_Index {\n");
-    indexText.append("  public static final ImmutableClassToInstanceMap INSTANCES = ImmutableClassToInstanceMap.builder()\n");
+    indexText.append("  public static final ImmutableClassToInstanceMap<AbstractFn> INSTANCES = ImmutableClassToInstanceMap.builder()\n");
     for(String instanceClass : classes) {
       indexText.append("      .put("+instanceClass+".class, new "+instanceClass+"())\n");
     }
