@@ -7,7 +7,9 @@ package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.FnType;
 import com.icosilune.fn.nodes.ConstantNode;
+import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
+import com.icosilune.fnexample.simple.Fn_Multiply;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -21,6 +23,7 @@ public class Example {
     JFrame frame = new JFrame("womp womp");
 
     NodeGraph graph = new NodeGraph();
+    graph.addNode(new FnNode(graph, new Fn_Multiply()));
     graph.addNode(new ConstantNode(graph, FnType.fromString("int"), 10));
 
     GraphPanel graphPanel = new GraphPanel(graph);
@@ -35,7 +38,10 @@ public class Example {
     frame.setVisible(true);
 
 
-
-    graph.addNode(new ConstantNode(graph, FnType.fromString("String"), "oops"));
+//    FnIndex index = new FnIndex.Builder().addPackage("com.icosilune.fnexample.simple").build();
+//    AbstractFn sum = Iterables.getOnlyElement(index.searchByClassName("Sum"));
+//    graph.addNode(new FnNode(graph, sum));
+    //graph.addNode(new ConstantNode(graph, FnType.fromString("String"), "oops"));
+//    graph.addNode(new FnNode(graph, new Fn_Multiply()));
   }
 }
