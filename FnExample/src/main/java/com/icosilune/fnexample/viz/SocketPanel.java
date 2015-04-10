@@ -6,6 +6,8 @@
 package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.nodes.Socket;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -16,6 +18,7 @@ import javax.swing.JPanel;
 public class SocketPanel extends JPanel {
 
   private final Socket socket;
+  private final SocketCirclePanel socketCirclePanel;
 
   public SocketPanel(Socket socket) {
     this.socket = socket;
@@ -24,9 +27,25 @@ public class SocketPanel extends JPanel {
 
     add(new JLabel(socket.getName()));
 
-    add(new SocketCirclePanel(socket));
+    socketCirclePanel = new SocketCirclePanel(socket);
+    add(socketCirclePanel);
     setOpaque(false);
   }
 
+  /**
+   * Gets the circle center with respect to the graph that contains the node.
+   * Note that this involves going several layers deep.
+   */
+  public Point2D getCircleCenter() {
+
+    Point2D circleLocation = socketCirclePanel.getLocation();
+    Point2D location = getLocation();
+    Point2D parentLocation = getParent().getLocation();
+    Point2D parentParentLocation = getParent().getParent().getLocation();
+
+    return new Point2D.Double(
+            circleLocation.getX() + location.getX() + parentLocation.getX() + parentParentLocation.getX() + socketCirclePanel.getWidth()/2,
+            circleLocation.getY() + location.getY() + parentLocation.getY() + parentParentLocation.getY() + socketCirclePanel.getHeight()/2);
+  }
 
 }

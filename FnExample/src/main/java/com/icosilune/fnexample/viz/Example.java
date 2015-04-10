@@ -6,6 +6,7 @@
 package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.FnType;
+import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -23,8 +24,12 @@ public class Example {
     JFrame frame = new JFrame("womp womp");
 
     NodeGraph graph = new NodeGraph();
-    graph.addNode(new FnNode(graph, new Fn_Multiply()));
-    graph.addNode(new ConstantNode(graph, FnType.fromString("int"), 10));
+    AbstractNode node1 = new FnNode(graph, new Fn_Multiply());
+    AbstractNode node2 = new ConstantNode(graph, FnType.fromString("double"), 10.0);
+    graph.addNode(node1);
+    graph.addNode(node2);
+
+    graph.addConnection(node1, node2, "output", "x");
 
     GraphPanel graphPanel = new GraphPanel(graph);
 

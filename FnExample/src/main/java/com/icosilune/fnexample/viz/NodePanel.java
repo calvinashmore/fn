@@ -7,11 +7,9 @@ package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.Socket;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -20,6 +18,9 @@ import javax.swing.JPanel;
 public class NodePanel extends JPanel {
 
   private final AbstractNode node;
+
+  private final Map<String, SocketPanel> inputSocketPanels = new HashMap<>();
+  private final Map<String, SocketPanel> outputSocketPanels = new HashMap<>();
 
   public NodePanel(AbstractNode node) {
     this.node = node;
@@ -33,8 +34,11 @@ public class NodePanel extends JPanel {
     inputSocketsPanel.setOpaque(false);
     add(inputSocketsPanel);
     inputSocketsPanel.setLayout(new BoxLayout(inputSocketsPanel, BoxLayout.Y_AXIS));
-    for(Socket inputSocket : node.getInputSockets().values())
-      inputSocketsPanel.add(new SocketPanel(inputSocket));
+    for(Socket inputSocket : node.getInputSockets().values()) {
+      SocketPanel socketPanel = new SocketPanel(inputSocket);
+      inputSocketPanels.put(inputSocket.getName(), socketPanel);
+      inputSocketsPanel.add(socketPanel);
+    }
 
     // node itself
     // note that moving the node label moves the whole NodePanel
@@ -49,14 +53,18 @@ public class NodePanel extends JPanel {
     outputSocketsPanel.setOpaque(false);
     add(outputSocketsPanel);
     outputSocketsPanel.setLayout(new BoxLayout(outputSocketsPanel, BoxLayout.Y_AXIS));
-    for(Socket outputSocket : node.getOutputSockets().values())
-      outputSocketsPanel.add(new SocketPanel(outputSocket));
+    for(Socket outputSocket : node.getOutputSockets().values()) {
+      SocketPanel socketPanel = new SocketPanel(outputSocket);
+      outputSocketPanels.put(outputSocket.getName(), socketPanel);
+      outputSocketsPanel.add(socketPanel);
+    }
   }
 
-//  @Override
-//  public void paint(Graphics g) {
-//    super.paint(g);
-//  }
+  public SocketPanel getInputSocket(String name) {
+    return inputSocketPanels.get(name);
+  }
 
-
+  public SocketPanel getOutputSocket(String name) {
+    return outputSocketPanels.get(name);
+  }
 }

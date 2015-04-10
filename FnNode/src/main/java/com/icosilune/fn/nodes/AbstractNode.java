@@ -42,9 +42,13 @@ public abstract class AbstractNode {
   }
 
   // do we want to expose this logic here, or in the node?
-  public void addInputConnection(AbstractNode otherNode, String outputSocketName, String inputSocketName) {
-    Preconditions.checkArgument(getInputSockets().containsKey(inputSocketName));
-    Preconditions.checkArgument(otherNode.getOutputSockets().containsKey(outputSocketName));
+  void addInputConnection(AbstractNode otherNode, String outputSocketName, String inputSocketName) {
+    Preconditions.checkArgument(getInputSockets().containsKey(inputSocketName),
+            "Node %s does not have input socket \"%s\". Available input sockets are: %s",
+            getName(), inputSocketName, getInputSockets().keySet());
+    Preconditions.checkArgument(otherNode.getOutputSockets().containsKey(outputSocketName),
+            "Node %s does not have output socket \"%s\". Available output sockets are: %s",
+            otherNode.getName(), outputSocketName, otherNode.getOutputSockets().keySet());
 
     if(inputConnections.containsKey(inputSocketName)) {
       // notify that this connection is being removed

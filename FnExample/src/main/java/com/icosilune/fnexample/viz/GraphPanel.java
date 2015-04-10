@@ -27,9 +27,11 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
 
   private final NodeGraph nodeGraph;
   private final Map<AbstractNode, NodePanel> nodes = new HashMap<>();
+  private final ConnectionRenderer connectionRenderer;
 
   public GraphPanel(NodeGraph nodeGraph) {
     this.nodeGraph = nodeGraph;
+    this.connectionRenderer = new ConnectionRenderer();
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
@@ -60,17 +62,20 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
 
   private void removeNode(AbstractNode node) {
     NodePanel nodePanel = nodes.remove(node);
+    // ??
   }
 
-//  @Override
-//  protected void paintChildren(Graphics g) {
-//    Graphics2D g2 = (Graphics2D) g;
-//
-//    AffineTransform oldTransform = g2.getTransform();
-//
-//    g2.transform(childTransform);
-//
-//    super.paintChildren(g);
-//    g2.setTransform(oldTransform);
-//  }
+  @Override
+  public void paint(Graphics g) {
+    Graphics2D g2 = (Graphics2D) g;
+
+    // draw connections underneath
+    for(AbstractNode node : nodes.keySet()) {
+      for(Connection connection : node.getInputConnections().values()) {
+        connectionRenderer.renderConnection(g2, connection, nodes.get(node), nodes.get(connection.getOutputNode()));
+      }
+    }
+
+    super.paint(g);
+  }
 }

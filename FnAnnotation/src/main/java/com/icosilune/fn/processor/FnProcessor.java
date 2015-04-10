@@ -41,7 +41,7 @@ public class FnProcessor extends AbstractProcessor {
 
   private static final String PREFIX = "Fn_";
 
-  private Multimap<String, String> packageToGeneratedTypes = HashMultimap.create();
+  private final Multimap<String, String> packageToGeneratedTypes = HashMultimap.create();
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -204,11 +204,12 @@ public class FnProcessor extends AbstractProcessor {
     indexText.append("import com.icosilune.fn.AbstractFn;\n");
     indexText.append("\n");
     indexText.append("public class Fn_Index {\n");
-    indexText.append("  public static final ImmutableClassToInstanceMap<AbstractFn> INSTANCES = ImmutableClassToInstanceMap.builder()\n");
+    indexText.append("  public static final ImmutableClassToInstanceMap<AbstractFn> INSTANCES =\n");
+    indexText.append("      ImmutableClassToInstanceMap.<AbstractFn>builder()\n");
     for(String instanceClass : classes) {
-      indexText.append("      .put("+instanceClass+".class, new "+instanceClass+"())\n");
+      indexText.append("          .put("+instanceClass+".class, new "+instanceClass+"())\n");
     }
-    indexText.append("      .build();\n");
+    indexText.append("          .build();\n");
     indexText.append("}\n");
 
     writeSourceFile(packageName+".Fn_Index", indexText.toString());
