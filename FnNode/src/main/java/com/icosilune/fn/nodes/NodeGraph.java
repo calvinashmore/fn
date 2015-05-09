@@ -5,12 +5,16 @@
  */
 package com.icosilune.fn.nodes;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.SetMultimap;
 import com.icosilune.fn.EvaluationContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -46,16 +50,23 @@ public class NodeGraph {
 
   // getContextDependentNodes
 
-  void evaluateGraph(EvaluationContext context) {
+//  void evaluateGraph(EvaluationContext context) {
+//
+//  }
 
-  }
-
+  /**
+   * Called when the node has changed value outside the process of evaluation.
+   */
   void onNodeUpdated(AbstractNode node) {
-    // ???
+    // TODO: later this should just queue this node up,
+    // so we don't necessarily update the whole graph when something changes (e.g.) in a UI thread.
+    propagateChanges(ImmutableSet.of(node), new EvaluationContext());
   }
 
   public void addConnection(AbstractNode inNode, AbstractNode outNode, String outputSocketName, String inputSocketName) {
     inNode.addInputConnection(outNode, outputSocketName, inputSocketName);
+
+    propagateChanges(ImmutableSet.of(inNode), new EvaluationContext());
   }
 
   public void addNode(AbstractNode node) {
@@ -71,6 +82,58 @@ public class NodeGraph {
       listeners.forEach(listener -> listener.nodeChanged(this, node, NodeChangeType.REMOVED));
     } else {
       throw new IllegalArgumentException();
+    }
+  }
+
+  /**
+   * Returns a multimap of each node to its output nodes.
+   */
+  private SetMultimap<AbstractNode, AbstractNode> getDownstreamConnections() {
+    SetMultimap<AbstractNode, AbstractNode> downstreamConnections = HashMultimap.create();
+    for (AbstractNode node : allNodes) {
+      for (Connection connection : node.getInputConnections().values()) {
+//        downstreamConnections.put(connection.getInputNode(), connection.getOutputNode());
+        downstreamConnections.put(connection.getOutputNode(), connection.getInputNode());
+      }
+    }
+    return downstreamConnections;
+  }
+
+  /**
+   * Updates all context dependent nodes, and propagates values downward.
+   */
+  public void step() {
+    Set<AbstractNode> contextDependentNodes = allNodes.stream()
+            .filter(AbstractNode::isContextDependent)
+            .collect(Collectors.toSet());
+
+    propagateChanges(contextDependentNodes, new EvaluationContext());
+  }
+
+  private void propagateChanges(Set<AbstractNode> changedNodes, EvaluationContext context) {
+    System.out.println("propagating changes: "+changedNodes);
+
+    Set<AbstractNode> nodesToUpdate = changedNodes;
+
+    Set<AbstractNode> updatedNodes = new HashSet();
+
+    SetMultimap<AbstractNode, AbstractNode> downstreamConnections = getDownstreamConnections();
+
+    // It is possible that we will have cycles in this graph,
+    // so if there is a cycle, only update a node once.
+    while(!nodesToUpdate.isEmpty()) {
+      Set<AbstractNode> touchedNodes = new HashSet();
+
+      for(AbstractNode node : nodesToUpdate) {
+        System.out.println("evaluating: "+node);
+        node.evaluate(context);
+        touchedNodes.addAll(downstreamConnections.get(node));
+      }
+
+      updatedNodes.addAll(nodesToUpdate);
+      touchedNodes.removeAll(updatedNodes);
+
+      nodesToUpdate = touchedNodes;
     }
   }
 

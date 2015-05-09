@@ -62,7 +62,10 @@ public class FnNode extends AbstractNode {
 
   @Override
   public void evaluate(EvaluationContext context) {
-    setOutputs(fn.evaluateWrapper(context, readInputs()));
-    getGraph().onNodeUpdated(this);
+    try {
+      setOutputs(fn.evaluateWrapper(context, readInputs()));
+    } catch(NullPointerException ex) {
+      // we're allowed to have null values??
+    }
   }
 }

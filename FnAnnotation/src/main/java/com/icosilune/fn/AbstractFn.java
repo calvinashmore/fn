@@ -30,6 +30,7 @@ public abstract class AbstractFn {
           EvaluationContext context, Map<String, Object> args);
 
   public boolean isContextDependent() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return false;
+//    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

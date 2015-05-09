@@ -29,6 +29,5 @@ public class ConnectionRenderer {
     Point2D outputCircleCenter = outputSocketPanel.getCircleCenter();
     g.drawLine((int) inputCircleCenter.getX(), (int) inputCircleCenter.getY(),
             (int) outputCircleCenter.getX(), (int) outputCircleCenter.getY());
-
   }
 }

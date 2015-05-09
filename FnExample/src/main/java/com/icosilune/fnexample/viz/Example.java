@@ -10,6 +10,7 @@ import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
+import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fnexample.simple.Fn_Multiply;
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -24,14 +25,18 @@ public class Example {
     JFrame frame = new JFrame("womp womp");
 
     NodeGraph graph = new NodeGraph();
+    NodeGraphEvaluatorPanel graphPanel = new NodeGraphEvaluatorPanel(graph);
+
     AbstractNode node1 = new FnNode(graph, new Fn_Multiply());
     AbstractNode node2 = new ConstantNode(graph, FnType.fromString("double"), 10.0);
+    AbstractNode sink = new SinkNode(graph, FnType.fromString("double"));
     graph.addNode(node1);
     graph.addNode(node2);
+    graph.addNode(sink);
 
     graph.addConnection(node1, node2, "output", "x");
-
-    GraphPanel graphPanel = new GraphPanel(graph);
+    graph.addConnection(node1, node2, "output", "y");
+    graph.addConnection(sink, node1, "out", "in");
 
     graphPanel.setPreferredSize(new Dimension(500,500));
 

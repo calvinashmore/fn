@@ -18,12 +18,10 @@ public class ConstantNode extends AbstractNode {
 
   private static final String OUTPUT_NAME = "output";
   private final Map<String, Socket> outputSocket;
-  private final FnType type;
   private Map<String, Object> outputValue;
 
   public ConstantNode(NodeGraph graph, FnType type, Object initialValue) {
     super(graph);
-    this.type = type;
     this.outputSocket = ImmutableMap.of(OUTPUT_NAME,
             Socket.create(OUTPUT_NAME, type, Socket.SocketType.OUTPUT));
 
@@ -33,6 +31,9 @@ public class ConstantNode extends AbstractNode {
   public final void setValue(Object value) {
     // TODO: check type.
     outputValue = ImmutableMap.of(OUTPUT_NAME, value);
+    setOutputs(outputValue);
+
+    getGraph().onNodeUpdated(this);
   }
 
   @Override

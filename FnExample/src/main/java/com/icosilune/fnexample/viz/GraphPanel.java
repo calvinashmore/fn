@@ -11,6 +11,7 @@ import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.NodeGraph.NodeGraphListener;
 import com.icosilune.fn.nodes.NodeGraph.NodeChangeType;
 import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
+import com.icosilune.fn.nodes.SinkNode;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;

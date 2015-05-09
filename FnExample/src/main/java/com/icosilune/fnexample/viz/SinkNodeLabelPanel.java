@@ -6,6 +6,7 @@
 package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.nodes.SinkNode;
 import java.awt.Color;
 import java.awt.LayoutManager;
 import javax.swing.JLabel;
@@ -16,13 +17,16 @@ import javax.swing.border.LineBorder;
  *
  * @author ashmore
  */
-public class NodeLabelPanel extends JPanel {
+public class SinkNodeLabelPanel extends JPanel {
 
-  private final AbstractNode node;
+  private final SinkNode node;
+  private final JLabel mainLabel;
 
-  public NodeLabelPanel(AbstractNode node) {
+  public SinkNodeLabelPanel(SinkNode node) {
     this.node = node;
     setBorder(new LineBorder(Color.DARK_GRAY, 2));
-    add(new JLabel(node.getName()));
+    add(mainLabel = new JLabel("        "));
+
+    node.addListener(value -> mainLabel.setText(String.valueOf(value)));
   }
 }

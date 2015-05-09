@@ -6,6 +6,7 @@
 package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fn.nodes.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class NodePanel extends JPanel {
 
     // node itself
     // note that moving the node label moves the whole NodePanel
-    NodeLabelPanel nodeLabelPanel = new NodeLabelPanel(node);
+    JPanel nodeLabelPanel = createLabelPanelForNode(node);
     add(nodeLabelPanel);
     DragHandler dragHandler = new DragHandler(this);
     nodeLabelPanel.addMouseListener(dragHandler);
@@ -57,6 +58,14 @@ public class NodePanel extends JPanel {
       SocketPanel socketPanel = new SocketPanel(outputSocket);
       outputSocketPanels.put(outputSocket.getName(), socketPanel);
       outputSocketsPanel.add(socketPanel);
+    }
+  }
+
+  private static JPanel createLabelPanelForNode(AbstractNode node) {
+    if(node instanceof SinkNode) {
+      return new SinkNodeLabelPanel((SinkNode) node);
+    } else {
+      return new NodeLabelPanel(node);
     }
   }
 
