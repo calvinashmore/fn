@@ -16,18 +16,15 @@ import java.awt.geom.Point2D;
  */
 public class ConnectionRenderer {
 
-  // can do straight lines
-  // would love to have fancy curved lines
+  private final ConnectionLineRenderer connectionLineRenderer = new ConnectionLineRenderer();
 
   void renderConnection(Graphics2D g, Connection connection, NodePanel inputNodePanel, NodePanel outputNodePanel) {
 
     SocketPanel inputSocketPanel = inputNodePanel.getInputSocket(connection.getInputSocket().getName());
     SocketPanel outputSocketPanel = outputNodePanel.getOutputSocket(connection.getOutputSocket().getName());
 
-    g.setColor(Color.red);
     Point2D inputCircleCenter = inputSocketPanel.getCircleCenter();
     Point2D outputCircleCenter = outputSocketPanel.getCircleCenter();
-    g.drawLine((int) inputCircleCenter.getX(), (int) inputCircleCenter.getY(),
-            (int) outputCircleCenter.getX(), (int) outputCircleCenter.getY());
+    connectionLineRenderer.renderLine(g, inputCircleCenter, outputCircleCenter);
   }
 }

@@ -25,4 +25,21 @@ public abstract class Socket {
   public static Socket create(String name, FnType type, SocketType socketType) {
     return new AutoValue_Socket(name, type, socketType);
   }
+
+  public boolean canConnectTo(Socket other) {
+    Socket inputSocket;
+    Socket outputSocket;
+
+    if (getSocketType() == SocketType.INPUT && other.getSocketType() == SocketType.OUTPUT) {
+      inputSocket = this;
+      outputSocket = other;
+    } else if(getSocketType() == SocketType.OUTPUT && other.getSocketType() == SocketType.INPUT) {
+      inputSocket = other;
+      outputSocket = this;
+    } else {
+      return false;
+    }
+    
+    return inputSocket.getType().isAssignableFrom(outputSocket.getType());
+  }
 }

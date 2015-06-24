@@ -5,6 +5,8 @@
  */
 package com.icosilune.fnexample.viz;
 
+import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.Socket;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,21 +19,30 @@ import javax.swing.JPanel;
  */
 public class SocketCirclePanel extends JPanel {
 
-  private final Socket socket;
+  private final NodeGraph.NodeAndSocket socket;
 
   // ******** We can maybe look this up from the graph- ie, have a map<Socket, Connection>
   private boolean connected = false;
 
-  public SocketCirclePanel(Socket socket) {
+  public SocketCirclePanel(GraphPanel graphPanel, NodeGraph.NodeAndSocket socket) {
     this.socket = socket;
     setPreferredSize(new Dimension(10,10));
     setOpaque(false);
+    addMouseListener(graphPanel.getCircleMouseListener());
+    addMouseMotionListener(graphPanel.getCircleMouseListener());
   }
 
   public void setConnected(boolean connected) {
     this.connected = connected;
   }
 
+  public boolean isConnected() {
+    return connected;
+  }
+
+  public Socket.SocketType getSocketType() {
+    return socket.getSocket().getSocketType();
+  }
 
   @Override
   public void paint(Graphics g) {
@@ -45,5 +56,9 @@ public class SocketCirclePanel extends JPanel {
     }
 
     g.fillOval(2, 2, 5, 5);
+  }
+
+  NodeGraph.NodeAndSocket getSocket() {
+    return socket;
   }
 }

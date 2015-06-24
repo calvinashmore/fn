@@ -5,6 +5,8 @@
  */
 package com.icosilune.fnexample.viz;
 
+import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.Socket;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -20,14 +22,14 @@ public class SocketPanel extends JPanel {
   private final Socket socket;
   private final SocketCirclePanel socketCirclePanel;
 
-  public SocketPanel(Socket socket) {
+  public SocketPanel(GraphPanel graphPanel, AbstractNode node, Socket socket) {
     this.socket = socket;
 
     // depending on input or output, add the label to the left or right
 
     add(new JLabel(socket.getName()));
 
-    socketCirclePanel = new SocketCirclePanel(socket);
+    socketCirclePanel = new SocketCirclePanel(graphPanel, NodeGraph.NodeAndSocket.create(node, socket));
     add(socketCirclePanel);
     setOpaque(false);
   }

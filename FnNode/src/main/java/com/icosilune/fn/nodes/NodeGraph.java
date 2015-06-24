@@ -5,6 +5,8 @@
  */
 package com.icosilune.fn.nodes;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -63,6 +65,24 @@ public class NodeGraph {
     propagateChanges(ImmutableSet.of(node), new EvaluationContext());
   }
 
+  public void addConnection(NodeAndSocket socket1, NodeAndSocket socket2) {
+    Preconditions.checkArgument(socket1.getSocket().canConnectTo(socket2.getSocket()),
+            "Sockets %s and %s cannot connect", socket1.getSocket(), socket2.getSocket());
+
+    NodeAndSocket inputSocket;
+    NodeAndSocket outputSocket;
+    if (socket1.getSocket().getSocketType() == Socket.SocketType.INPUT) {
+      inputSocket = socket1;
+      outputSocket = socket2;
+    } else {
+      inputSocket = socket2;
+      outputSocket = socket1;
+    }
+
+    addConnection(inputSocket.getNode(), outputSocket.getNode(),
+            outputSocket.getSocket().getName(), inputSocket.getSocket().getName());
+  }
+
   public void addConnection(AbstractNode inNode, AbstractNode outNode, String outputSocketName, String inputSocketName) {
     inNode.addInputConnection(outNode, outputSocketName, inputSocketName);
 
@@ -111,8 +131,6 @@ public class NodeGraph {
   }
 
   private void propagateChanges(Set<AbstractNode> changedNodes, EvaluationContext context) {
-    System.out.println("propagating changes: "+changedNodes);
-
     Set<AbstractNode> nodesToUpdate = changedNodes;
 
     Set<AbstractNode> updatedNodes = new HashSet();
@@ -125,7 +143,6 @@ public class NodeGraph {
       Set<AbstractNode> touchedNodes = new HashSet();
 
       for(AbstractNode node : nodesToUpdate) {
-        System.out.println("evaluating: "+node);
         node.evaluate(context);
         touchedNodes.addAll(downstreamConnections.get(node));
       }
@@ -150,5 +167,31 @@ public class NodeGraph {
   public interface NodeGraphListener {
     public void nodeChanged(NodeGraph graph, AbstractNode node, NodeChangeType change);
     public void connectionChanged(NodeGraph graph, Connection node, ConnectionChangeType change);
+  }
+
+  /**
+   * Represents a node and socket pairing
+   */
+  @AutoValue
+  public static abstract class NodeAndSocket {
+    public abstract AbstractNode getNode();
+    public abstract Socket getSocket();
+    public static NodeAndSocket create(AbstractNode node, Socket socket) {
+      if(socket.getSocketType() == Socket.SocketType.INPUT) {
+        Preconditions.checkArgument(
+                node.getInputSockets().values().contains(socket),
+                "Node %s expected to contain input socket %s, but contains %s",
+                node, socket, node.getInputSockets());
+      } else if(socket.getSocketType() == Socket.SocketType.OUTPUT) {
+        Preconditions.checkArgument(
+                node.getOutputSockets().values().contains(socket),
+                "Node %s expected to contain output socket %s, but contains %s",
+                node, socket, node.getOutputSockets());
+      } else {
+        throw new IllegalArgumentException("Unrecognized socket type: "+socket);
+      }
+
+      return new AutoValue_NodeGraph_NodeAndSocket(node, socket);
+    }
   }
 }

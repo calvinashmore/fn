@@ -25,4 +25,8 @@ public class NodeLabelPanel extends JPanel {
     setBorder(new LineBorder(Color.DARK_GRAY, 2));
     add(new JLabel(node.getName()));
   }
+
+  public AbstractNode getNode() {
+    return node;
+  }
 }

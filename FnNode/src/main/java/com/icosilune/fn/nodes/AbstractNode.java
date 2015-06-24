@@ -101,4 +101,9 @@ public abstract class AbstractNode {
   // or: NodeGraph is responsible for tracking updating and stuff
 
   // maybe have listeners on some nodes?
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

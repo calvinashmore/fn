@@ -6,6 +6,7 @@
 package com.icosilune.fnexample.viz;
 
 import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fn.nodes.Socket;
 import java.util.HashMap;
@@ -18,13 +19,15 @@ import javax.swing.JPanel;
  */
 public class NodePanel extends JPanel {
 
-  private final AbstractNode node;
+//  private final AbstractNode node;
+//  private final GraphPanel graphPanel;
 
   private final Map<String, SocketPanel> inputSocketPanels = new HashMap<>();
   private final Map<String, SocketPanel> outputSocketPanels = new HashMap<>();
 
-  public NodePanel(AbstractNode node) {
-    this.node = node;
+  public NodePanel(GraphPanel graphPanel, AbstractNode node) {
+//    this.graphPanel = graphPanel;
+//    this.node = node;
 
     setOpaque(false);
 
@@ -36,7 +39,7 @@ public class NodePanel extends JPanel {
     add(inputSocketsPanel);
     inputSocketsPanel.setLayout(new BoxLayout(inputSocketsPanel, BoxLayout.Y_AXIS));
     for(Socket inputSocket : node.getInputSockets().values()) {
-      SocketPanel socketPanel = new SocketPanel(inputSocket);
+      SocketPanel socketPanel = new SocketPanel(graphPanel, node, inputSocket);
       inputSocketPanels.put(inputSocket.getName(), socketPanel);
       inputSocketsPanel.add(socketPanel);
     }
@@ -55,7 +58,7 @@ public class NodePanel extends JPanel {
     add(outputSocketsPanel);
     outputSocketsPanel.setLayout(new BoxLayout(outputSocketsPanel, BoxLayout.Y_AXIS));
     for(Socket outputSocket : node.getOutputSockets().values()) {
-      SocketPanel socketPanel = new SocketPanel(outputSocket);
+      SocketPanel socketPanel = new SocketPanel(graphPanel, node, outputSocket);
       outputSocketPanels.put(outputSocket.getName(), socketPanel);
       outputSocketsPanel.add(socketPanel);
     }
@@ -64,6 +67,8 @@ public class NodePanel extends JPanel {
   private static JPanel createLabelPanelForNode(AbstractNode node) {
     if(node instanceof SinkNode) {
       return new SinkNodeLabelPanel((SinkNode) node);
+    } else if(node instanceof ConstantNode) {
+      return new HorizontalSliderLabelPanel((ConstantNode) node, -10, 10);
     } else {
       return new NodeLabelPanel(node);
     }

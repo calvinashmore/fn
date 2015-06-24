@@ -14,6 +14,9 @@ import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
 import com.icosilune.fn.nodes.SinkNode;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +32,28 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   private final NodeGraph nodeGraph;
   private final Map<AbstractNode, NodePanel> nodes = new HashMap<>();
   private final ConnectionRenderer connectionRenderer;
+  private final CircleMouseListener circleMouseListener;
+
+  private int mouseX;
+  private int mouseY;
 
   public GraphPanel(NodeGraph nodeGraph) {
     this.nodeGraph = nodeGraph;
     this.connectionRenderer = new ConnectionRenderer();
+    this.circleMouseListener = new CircleMouseListener(nodeGraph);
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
     }
 
     nodeGraph.addListener(this);
+    BackgroundMouseListener backgroundMouseListener = new BackgroundMouseListener();
+    addMouseMotionListener(backgroundMouseListener);
+    addMouseListener(backgroundMouseListener);
+  }
+
+  public CircleMouseListener getCircleMouseListener() {
+    return circleMouseListener;
   }
 
   @Override
@@ -55,7 +70,7 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   }
 
   private void addNode(AbstractNode node) {
-    NodePanel nodePanel = new NodePanel(node);
+    NodePanel nodePanel = new NodePanel(this, node);
     add(nodePanel, JLayeredPane.DEFAULT_LAYER);
     nodePanel.setSize(nodePanel.getPreferredSize());
     nodes.put(node, nodePanel);
@@ -77,6 +92,31 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
       }
     }
 
+    if (circleMouseListener.getSelectedCircle() != null) {
+      SocketCirclePanel selectedCircle = circleMouseListener.getSelectedCircle();
+
+      Point graphPanelLocation = getLocationOnScreen();
+      Point circleLocation = selectedCircle.getLocationOnScreen();
+      g.drawLine((int)(circleLocation.getX() - graphPanelLocation.getX()),
+              (int)(circleLocation.getY() - graphPanelLocation.getY()), mouseX, mouseY);
+    }
+
     super.paint(g);
+  }
+
+  private class BackgroundMouseListener extends MouseAdapter {
+    @Override
+    public void mouseMoved(MouseEvent e) {
+      mouseX = e.getX();
+      mouseY = e.getY();
+      repaint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if(circleMouseListener.getSelectedCircle() != null) {
+        circleMouseListener.deselect();
+      }
+    }
   }
 }
