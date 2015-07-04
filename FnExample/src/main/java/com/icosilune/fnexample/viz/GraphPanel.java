@@ -5,6 +5,11 @@
  */
 package com.icosilune.fnexample.viz;
 
+import com.icosilune.fnexample.viz.nodes.CircleMouseListener;
+import com.icosilune.fnexample.viz.nodes.NodeContainerPanel;
+import com.icosilune.fnexample.viz.nodes.NewNodeMenu;
+import com.icosilune.fnexample.viz.nodes.SocketCirclePanel;
+import com.google.common.base.Preconditions;
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.Connection;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -12,6 +17,8 @@ import com.icosilune.fn.nodes.NodeGraph.NodeGraphListener;
 import com.icosilune.fn.nodes.NodeGraph.NodeChangeType;
 import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
 import com.icosilune.fn.nodes.SinkNode;
+import com.icosilune.fnexample.viz.nodes.NodeFactoryFactory;
+import com.icosilune.fnexample.viz.nodes.NodePanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -30,9 +37,11 @@ import javax.swing.JPanel;
 public class GraphPanel extends JLayeredPane implements NodeGraphListener {
 
   private final NodeGraph nodeGraph;
-  private final Map<AbstractNode, NodePanel> nodes = new HashMap<>();
+  private final Map<AbstractNode, NodeContainerPanel> nodes = new HashMap<>();
   private final ConnectionRenderer connectionRenderer;
   private final CircleMouseListener circleMouseListener;
+  private final NewNodeMenu newNodeMenu;
+  private final NodeFactoryFactory nodeFactoryFactory;
 
   private int mouseX;
   private int mouseY;
@@ -41,6 +50,8 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
     this.nodeGraph = nodeGraph;
     this.connectionRenderer = new ConnectionRenderer();
     this.circleMouseListener = new CircleMouseListener(nodeGraph);
+    this.newNodeMenu = new NewNodeMenu();
+    this.nodeFactoryFactory = new NodeFactoryFactory(nodeGraph, circleMouseListener);
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
@@ -70,15 +81,28 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   }
 
   private void addNode(AbstractNode node) {
-    NodePanel nodePanel = new NodePanel(this, node);
-    add(nodePanel, JLayeredPane.DEFAULT_LAYER);
-    nodePanel.setSize(nodePanel.getPreferredSize());
-    nodes.put(node, nodePanel);
+    if(nodes.get(node) == null) {
+      addNode(node, nodeFactoryFactory.createPanelForNode(node));
+    }
+  }
+
+  /**
+   * publicly visible way to add node panels.
+   */
+  public void addNode(AbstractNode node, NodePanel nodePanel) {
+    Preconditions.checkArgument(nodePanel.getNode() == node);
+//    Preconditions.checkArgument(nodePanel.getGraphPanel() == this);
+//    add(nodePanel, JLayeredPane.DEFAULT_LAYER);
+//    nodePanel.setSize(nodePanel.getPreferredSize());
+    NodeContainerPanel nodeContainerPanel = new NodeContainerPanel(circleMouseListener, node, nodePanel);
+    add(nodeContainerPanel, JLayeredPane.DEFAULT_LAYER);
+    nodeContainerPanel.setSize(nodeContainerPanel.getPreferredSize());
+    nodes.put(node,  nodeContainerPanel);
   }
 
   private void removeNode(AbstractNode node) {
-    NodePanel nodePanel = nodes.remove(node);
-    // ??
+    NodeContainerPanel nodePanel = nodes.remove(node);
+    remove(nodePanel);
   }
 
   @Override
@@ -117,6 +141,14 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
       if(circleMouseListener.getSelectedCircle() != null) {
         circleMouseListener.deselect();
       }
+
+      if(e.getClickCount() == 2) {
+        newNodeMenu.show(GraphPanel.this, e.getX(), e.getY());
+      }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
     }
   }
 }

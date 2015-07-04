@@ -28,6 +28,10 @@ public class ConstantNode extends AbstractNode {
     setValue(initialValue);
   }
 
+  public FnType getType() {
+    return getOutputSockets().get(OUTPUT_NAME).getType();
+  }
+
   public final void setValue(Object value) {
     // TODO: check type.
     outputValue = ImmutableMap.of(OUTPUT_NAME, value);

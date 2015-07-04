@@ -5,6 +5,8 @@
  */
 package com.icosilune.fnexample.viz;
 
+import com.icosilune.fnexample.viz.nodes.SocketPanel;
+import com.icosilune.fnexample.viz.nodes.NodeContainerPanel;
 import com.icosilune.fn.nodes.Connection;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,7 +20,7 @@ public class ConnectionRenderer {
 
   private final ConnectionLineRenderer connectionLineRenderer = new ConnectionLineRenderer();
 
-  void renderConnection(Graphics2D g, Connection connection, NodePanel inputNodePanel, NodePanel outputNodePanel) {
+  void renderConnection(Graphics2D g, Connection connection, NodeContainerPanel inputNodePanel, NodeContainerPanel outputNodePanel) {
 
     SocketPanel inputSocketPanel = inputNodePanel.getInputSocket(connection.getInputSocket().getName());
     SocketPanel outputSocketPanel = outputNodePanel.getOutputSocket(connection.getOutputSocket().getName());

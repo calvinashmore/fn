@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.viz.nodes;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -24,12 +24,12 @@ public class SocketCirclePanel extends JPanel {
   // ******** We can maybe look this up from the graph- ie, have a map<Socket, Connection>
   private boolean connected = false;
 
-  public SocketCirclePanel(GraphPanel graphPanel, NodeGraph.NodeAndSocket socket) {
+  public SocketCirclePanel(CircleMouseListener circleListener, NodeGraph.NodeAndSocket socket) {
     this.socket = socket;
     setPreferredSize(new Dimension(10,10));
     setOpaque(false);
-    addMouseListener(graphPanel.getCircleMouseListener());
-    addMouseMotionListener(graphPanel.getCircleMouseListener());
+    addMouseListener(circleListener);
+    addMouseMotionListener(circleListener);
   }
 
   public void setConnected(boolean connected) {

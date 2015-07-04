@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.viz.nodes;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -22,14 +22,14 @@ public class SocketPanel extends JPanel {
   private final Socket socket;
   private final SocketCirclePanel socketCirclePanel;
 
-  public SocketPanel(GraphPanel graphPanel, AbstractNode node, Socket socket) {
+  public SocketPanel(CircleMouseListener circleListener, AbstractNode node, Socket socket) {
     this.socket = socket;
 
     // depending on input or output, add the label to the left or right
 
     add(new JLabel(socket.getName()));
 
-    socketCirclePanel = new SocketCirclePanel(graphPanel, NodeGraph.NodeAndSocket.create(node, socket));
+    socketCirclePanel = new SocketCirclePanel(circleListener, NodeGraph.NodeAndSocket.create(node, socket));
     add(socketCirclePanel);
     setOpaque(false);
   }

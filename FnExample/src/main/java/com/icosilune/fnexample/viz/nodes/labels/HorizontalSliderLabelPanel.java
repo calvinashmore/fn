@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.viz.nodes.labels;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
@@ -14,7 +14,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author ashmore
  */
-public class HorizontalSliderLabelPanel extends NodeLabelPanel {
+public class HorizontalSliderLabelPanel extends SimpleNodeLabelPanel {
 
   private static final int MIN_SLIDER_VALUE = 0;
   private static final int MAX_SLIDER_VALUE = 100;

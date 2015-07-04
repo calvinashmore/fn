@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.viz.nodes;
 
 import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.Socket;
@@ -21,7 +21,7 @@ public class CircleMouseListener extends MouseAdapter {
   //private boolean hasFocus = false;
   private SocketCirclePanel selectedCircle;
 
-  CircleMouseListener(NodeGraph nodeGraph) {
+  public CircleMouseListener(NodeGraph nodeGraph) {
     this.nodeGraph = nodeGraph;
   }
 
@@ -34,7 +34,7 @@ public class CircleMouseListener extends MouseAdapter {
       selectedCircle = null;
     }
 
-    System.out.println("clicked: "+circle.getSocket());
+    //System.out.println("clicked: "+circle.getSocket());
 
     // logical conditions
     // 1) do we have a connection socket selected now?

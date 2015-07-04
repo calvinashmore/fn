@@ -38,5 +38,4 @@ public class DragHandler extends MouseAdapter {
     component.setLocation(currentLocation.x + dx, currentLocation.y + dy);
     component.getParent().repaint();
   }
-
 }

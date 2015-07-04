@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.viz.nodes.labels;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.SinkNode;
+import com.icosilune.fnexample.viz.nodes.NodePanel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,16 +19,19 @@ import javax.swing.border.LineBorder;
  *
  * @author ashmore
  */
-public class SinkNodeLabelPanel extends JPanel {
+public class SinkNodeLabelPanel extends NodePanel {
 
-  private final SinkNode node;
   private final JLabel mainLabel;
 
   public SinkNodeLabelPanel(SinkNode node) {
-    this.node = node;
+    super(node);
     setBorder(new LineBorder(Color.DARK_GRAY, 2));
-    add(mainLabel = new JLabel("        "));
+    add(mainLabel = new JLabel());
+    mainLabel.setPreferredSize(new Dimension(100, 20));
 
-    node.addListener(value -> mainLabel.setText(String.valueOf(value)));
+    node.addListener(value -> {
+      mainLabel.setText(String.valueOf(value));
+      setSize(getPreferredSize());
+    });
   }
 }
