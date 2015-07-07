@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz.nodes.labels;
+package com.icosilune.fn.ui.nodes.labels;
 
 import com.icosilune.fn.nodes.AbstractNode;
-import com.icosilune.fnexample.viz.nodes.NodePanel;
+import com.icosilune.fn.ui.nodes.NodePanel;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;

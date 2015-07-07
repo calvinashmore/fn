@@ -3,32 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fn.ui;
 
-import com.icosilune.fnexample.viz.nodes.CircleMouseListener;
-import com.icosilune.fnexample.viz.nodes.NodeContainerPanel;
-import com.icosilune.fnexample.viz.nodes.NewNodeMenu;
-import com.icosilune.fnexample.viz.nodes.SocketCirclePanel;
+import com.icosilune.fn.ui.nodes.CircleMouseListener;
+import com.icosilune.fn.ui.nodes.NodeContainerPanel;
+import com.icosilune.fn.ui.nodes.NewNodeMenu;
+import com.icosilune.fn.ui.nodes.SocketCirclePanel;
 import com.google.common.base.Preconditions;
+import com.icosilune.fn.AbstractFn;
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.Connection;
 import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.NodeGraph.NodeGraphListener;
 import com.icosilune.fn.nodes.NodeGraph.NodeChangeType;
 import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
-import com.icosilune.fn.nodes.SinkNode;
-import com.icosilune.fnexample.viz.nodes.NodeFactoryFactory;
-import com.icosilune.fnexample.viz.nodes.NodePanel;
+import com.icosilune.fn.ui.nodes.NodeFactoryFactory;
+import com.icosilune.fn.ui.nodes.NodePanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -46,12 +45,12 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   private int mouseX;
   private int mouseY;
 
-  public GraphPanel(NodeGraph nodeGraph) {
+  public GraphPanel(NodeGraph nodeGraph, Collection<AbstractFn> fns) {
     this.nodeGraph = nodeGraph;
     this.connectionRenderer = new ConnectionRenderer();
     this.circleMouseListener = new CircleMouseListener(nodeGraph);
-    this.newNodeMenu = new NewNodeMenu();
-    this.nodeFactoryFactory = new NodeFactoryFactory(nodeGraph, circleMouseListener);
+    this.nodeFactoryFactory = new NodeFactoryFactory(nodeGraph);
+    this.newNodeMenu = new NewNodeMenu(NewNodeMenu.FnNodeKey.fromInstances(fns), nodeFactoryFactory);
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
@@ -91,9 +90,6 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
    */
   public void addNode(AbstractNode node, NodePanel nodePanel) {
     Preconditions.checkArgument(nodePanel.getNode() == node);
-//    Preconditions.checkArgument(nodePanel.getGraphPanel() == this);
-//    add(nodePanel, JLayeredPane.DEFAULT_LAYER);
-//    nodePanel.setSize(nodePanel.getPreferredSize());
     NodeContainerPanel nodeContainerPanel = new NodeContainerPanel(circleMouseListener, node, nodePanel);
     add(nodeContainerPanel, JLayeredPane.DEFAULT_LAYER);
     nodeContainerPanel.setSize(nodeContainerPanel.getPreferredSize());

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fn.ui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

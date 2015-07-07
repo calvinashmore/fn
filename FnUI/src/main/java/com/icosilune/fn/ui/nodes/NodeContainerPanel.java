@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz.nodes;
+package com.icosilune.fn.ui.nodes;
 
 import com.icosilune.fn.FnType;
-import com.icosilune.fnexample.viz.nodes.labels.HorizontalSliderLabelPanel;
-import com.icosilune.fnexample.viz.nodes.labels.SinkNodeLabelPanel;
-import com.icosilune.fnexample.viz.nodes.labels.SimpleNodeLabelPanel;
+import com.icosilune.fn.ui.nodes.labels.HorizontalSliderLabelPanel;
+import com.icosilune.fn.ui.nodes.labels.SinkNodeLabelPanel;
+import com.icosilune.fn.ui.nodes.labels.SimpleNodeLabelPanel;
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fn.nodes.Socket;
-import com.icosilune.fnexample.viz.DragHandler;
+import com.icosilune.fn.ui.DragHandler;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BoxLayout;

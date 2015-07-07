@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fn.ui;
 
-import com.icosilune.fn.nodes.AbstractNode;
+import com.icosilune.fn.AbstractFn;
 import com.icosilune.fn.nodes.NodeGraph;
 import java.awt.BorderLayout;
+import java.util.Collection;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -21,10 +22,10 @@ public class NodeGraphEvaluatorPanel extends JPanel {
   private final GraphPanel graphPanel;
   private final NodeGraph nodeGraph;
 
-  public NodeGraphEvaluatorPanel(NodeGraph nodeGraph) {
+  public NodeGraphEvaluatorPanel(NodeGraph nodeGraph, Collection<AbstractFn> fns) {
     this.nodeGraph = nodeGraph;
 
-    graphPanel = new GraphPanel(nodeGraph);
+    graphPanel = new GraphPanel(nodeGraph, fns);
 
     setLayout(new BorderLayout());
     add(graphPanel, BorderLayout.CENTER);
@@ -39,7 +40,6 @@ public class NodeGraphEvaluatorPanel extends JPanel {
   }
 
   private void step() {
-    //nodeGraph...
     nodeGraph.step();
   }
 }

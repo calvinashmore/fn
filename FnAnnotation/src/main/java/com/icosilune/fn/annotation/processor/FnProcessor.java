@@ -40,6 +40,7 @@ import javax.tools.JavaFileObject;
 public class FnProcessor extends AbstractProcessor {
 
   private static final String PREFIX = "Fn_";
+  private static final String INDEX_NAME = PREFIX+"Index";
 
   private final Multimap<String, String> packageToGeneratedTypes = HashMultimap.create();
 
@@ -54,7 +55,7 @@ public class FnProcessor extends AbstractProcessor {
     if(roundEnv.processingOver()) {
       // generate indices.
       for(String packageName : packageToGeneratedTypes.keySet()) {
-        generateIndex(packageName, packageToGeneratedTypes.get(packageName));
+        generateIndex(packageName, packageToGeneratedTypes.get(packageName), annotations);
       }
     }
 
@@ -76,9 +77,6 @@ public class FnProcessor extends AbstractProcessor {
       type = (TypeElement) type.getEnclosingElement();
       name = type.getSimpleName() + "_" + name;
     }
-//    String pkg = packageNameOf(type);
-//    String dot = pkg.isEmpty() ? "" : ".";
-//    return pkg + dot + PREFIX + name;
     return PREFIX + name;
   }
 
@@ -139,7 +137,6 @@ public class FnProcessor extends AbstractProcessor {
 
     for(int i=0;i<evaluateMethod.getParameters().size();i++) {
       VariableElement var = evaluateMethod.getParameters().get(i);
-//    for(VariableElement var : evaluateMethod.getParameters()) {
       sb.append("    "+var.asType()+" in"+i+" = ("+var.asType()+") args.get(\""+var.getSimpleName()+"\");\n");
     }
     sb.append("    return ImmutableMap.of(OUT1, (Object) super.evaluate(");
@@ -182,9 +179,6 @@ public class FnProcessor extends AbstractProcessor {
           processingEnv.getFiler().createSourceFile(className, originatingTypes);
       try (Writer writer = sourceFile.openWriter()) {
         writer.write(text);
-
-
-
         System.out.println("***** GENERATED "+className+".java");
         System.out.println(text);
         System.out.println();
@@ -195,7 +189,7 @@ public class FnProcessor extends AbstractProcessor {
     }
   }
 
-  private void generateIndex(String packageName, Collection<String> classes) {
+  private void generateIndex(String packageName, Collection<String> classes, Iterable<? extends TypeElement> originatingTypes) {
     StringBuilder indexText = new StringBuilder();
 
     indexText.append("package "+packageName+";\n");
@@ -203,7 +197,7 @@ public class FnProcessor extends AbstractProcessor {
     indexText.append("import com.google.common.collect.ImmutableClassToInstanceMap;\n");
     indexText.append("import com.icosilune.fn.AbstractFn;\n");
     indexText.append("\n");
-    indexText.append("public class Fn_Index {\n");
+    indexText.append("public class "+INDEX_NAME+" {\n");
     indexText.append("  public static final ImmutableClassToInstanceMap<AbstractFn> INSTANCES =\n");
     indexText.append("      ImmutableClassToInstanceMap.<AbstractFn>builder()\n");
     for(String instanceClass : classes) {
@@ -212,6 +206,6 @@ public class FnProcessor extends AbstractProcessor {
     indexText.append("          .build();\n");
     indexText.append("}\n");
 
-    writeSourceFile(packageName+".Fn_Index", indexText.toString());
+    writeSourceFile(packageName+"."+INDEX_NAME, indexText.toString(), Iterables.toArray(originatingTypes, TypeElement.class));
   }
 }

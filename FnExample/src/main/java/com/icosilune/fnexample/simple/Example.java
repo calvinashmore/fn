@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fnexample.simple;
 
 import com.icosilune.fn.FnType;
 import com.icosilune.fn.nodes.AbstractNode;
@@ -11,7 +11,7 @@ import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.SinkNode;
-import com.icosilune.fnexample.simple.Fn_Multiply;
+import com.icosilune.fn.ui.NodeGraphEvaluatorPanel;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -21,11 +21,11 @@ import javax.swing.JFrame;
  */
 public class Example {
 
-  public static void main(String args[]) {
+  public static void main(String args[]) throws Exception {
     JFrame frame = new JFrame("womp womp");
 
     NodeGraph graph = new NodeGraph();
-    NodeGraphEvaluatorPanel graphPanel = new NodeGraphEvaluatorPanel(graph);
+    NodeGraphEvaluatorPanel graphPanel = new NodeGraphEvaluatorPanel(graph, Fn_Index.INSTANCES.values());
 
     AbstractNode node1 = new FnNode(graph, new Fn_Multiply());
     AbstractNode node2 = new ConstantNode(graph, FnType.fromString("double"), 10.0);

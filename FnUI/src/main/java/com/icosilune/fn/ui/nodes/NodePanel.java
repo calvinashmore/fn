@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz.nodes;
+package com.icosilune.fn.ui.nodes;
 
 import com.icosilune.fn.nodes.AbstractNode;
 import javax.swing.JPanel;

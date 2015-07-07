@@ -8,6 +8,7 @@
   <modules>
     <module>FnAnnotation</module>
     <module>FnNode</module>
+    <module>FnUI</module>
     <module>FnExample</module>
   </modules>
 </project>

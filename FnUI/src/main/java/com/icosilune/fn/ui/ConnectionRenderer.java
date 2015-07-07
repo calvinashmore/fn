@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.fnexample.viz;
+package com.icosilune.fn.ui;
 
-import com.icosilune.fnexample.viz.nodes.SocketPanel;
-import com.icosilune.fnexample.viz.nodes.NodeContainerPanel;
+import com.icosilune.fn.ui.nodes.SocketPanel;
+import com.icosilune.fn.ui.nodes.NodeContainerPanel;
 import com.icosilune.fn.nodes.Connection;
 import java.awt.Color;
 import java.awt.Graphics2D;
