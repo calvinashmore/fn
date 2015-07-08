@@ -7,6 +7,8 @@ package com.icosilune.fn.ui;
 
 import com.icosilune.fn.AbstractFn;
 import com.icosilune.fn.nodes.NodeGraph;
+import com.icosilune.fn.ui.nodes.NodeFactory;
+import com.icosilune.fn.ui.nodes.NodeFactoryImpl;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import javax.swing.BoxLayout;
@@ -25,7 +27,8 @@ public class NodeGraphEvaluatorPanel extends JPanel {
   public NodeGraphEvaluatorPanel(NodeGraph nodeGraph, Collection<AbstractFn> fns) {
     this.nodeGraph = nodeGraph;
 
-    graphPanel = new GraphPanel(nodeGraph, fns);
+    NodeFactory nodeFactory = new NodeFactoryImpl(nodeGraph, NodeFactory.FnNodeKey.fromInstances(fns));
+    graphPanel = new GraphPanel(nodeGraph, nodeFactory);
 
     setLayout(new BorderLayout());
     add(graphPanel, BorderLayout.CENTER);

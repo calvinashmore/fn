@@ -5,13 +5,7 @@
  */
 package com.icosilune.fn.ui.nodes;
 
-import com.icosilune.fn.FnType;
-import com.icosilune.fn.ui.nodes.labels.HorizontalSliderLabelPanel;
-import com.icosilune.fn.ui.nodes.labels.SinkNodeLabelPanel;
-import com.icosilune.fn.ui.nodes.labels.SimpleNodeLabelPanel;
 import com.icosilune.fn.nodes.AbstractNode;
-import com.icosilune.fn.nodes.ConstantNode;
-import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fn.nodes.Socket;
 import com.icosilune.fn.ui.DragHandler;
 import java.util.HashMap;
@@ -25,17 +19,10 @@ import javax.swing.JPanel;
 public class NodeContainerPanel extends JPanel {
 
   private final AbstractNode node;
-//  private final GraphPanel graphPanel;
-
   private final Map<String, SocketPanel> inputSocketPanels = new HashMap<>();
   private final Map<String, SocketPanel> outputSocketPanels = new HashMap<>();
 
-//  public NodeContainerPanel(CircleMouseListener circleListener, AbstractNode node) {
-//    this(circleListener, node, createDefaultLabelPanelForNode(node));
-//  }
-
   public NodeContainerPanel(CircleMouseListener circleListener, AbstractNode node, NodePanel nodePanel) {
-//    this.graphPanel = graphPanel;
     this.node = node;
 
     setOpaque(false);
@@ -72,24 +59,9 @@ public class NodeContainerPanel extends JPanel {
     }
   }
 
-//  private static NodePanel createDefaultLabelPanelForNode(AbstractNode node) {
-//    if(node instanceof SinkNode) {
-//      return new SinkNodeLabelPanel((SinkNode) node);
-//    } else if(node instanceof ConstantNode
-//            && ((ConstantNode)node).getType().isAssignableFrom(FnType.fromString("double"))) {
-//      return new HorizontalSliderLabelPanel((ConstantNode) node, -10, 10);
-//    } else {
-//      return new SimpleNodeLabelPanel(node);
-//    }
-//  }
-
   public AbstractNode getNode() {
     return node;
   }
-
-//  public GraphPanel getGraphPanel() {
-//    return graphPanel;
-//  }
 
   public SocketPanel getInputSocket(String name) {
     return inputSocketPanels.get(name);

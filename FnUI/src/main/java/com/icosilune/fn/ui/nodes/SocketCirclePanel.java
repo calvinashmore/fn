@@ -5,7 +5,6 @@
  */
 package com.icosilune.fn.ui.nodes;
 
-import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.Socket;
 import java.awt.Color;

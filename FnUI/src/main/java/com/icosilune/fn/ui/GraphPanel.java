@@ -17,7 +17,8 @@ import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.NodeGraph.NodeGraphListener;
 import com.icosilune.fn.nodes.NodeGraph.NodeChangeType;
 import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
-import com.icosilune.fn.ui.nodes.NodeFactoryFactory;
+import com.icosilune.fn.ui.nodes.NodeFactory;
+import com.icosilune.fn.ui.nodes.NodeFactoryImpl;
 import com.icosilune.fn.ui.nodes.NodePanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -40,17 +41,17 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   private final ConnectionRenderer connectionRenderer;
   private final CircleMouseListener circleMouseListener;
   private final NewNodeMenu newNodeMenu;
-  private final NodeFactoryFactory nodeFactoryFactory;
+  private final NodeFactory nodeFactory;
 
   private int mouseX;
   private int mouseY;
 
-  public GraphPanel(NodeGraph nodeGraph, Collection<AbstractFn> fns) {
+  public GraphPanel(NodeGraph nodeGraph, NodeFactory nodeFactory) {
     this.nodeGraph = nodeGraph;
     this.connectionRenderer = new ConnectionRenderer();
     this.circleMouseListener = new CircleMouseListener(nodeGraph);
-    this.nodeFactoryFactory = new NodeFactoryFactory(nodeGraph);
-    this.newNodeMenu = new NewNodeMenu(NewNodeMenu.FnNodeKey.fromInstances(fns), nodeFactoryFactory);
+    this.nodeFactory = nodeFactory;
+    this.newNodeMenu = new NewNodeMenu(nodeFactory);
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
@@ -81,7 +82,7 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
 
   private void addNode(AbstractNode node) {
     if(nodes.get(node) == null) {
-      addNode(node, nodeFactoryFactory.createPanelForNode(node));
+      addNode(node, nodeFactory.createPanelForNode(node));
     }
   }
 

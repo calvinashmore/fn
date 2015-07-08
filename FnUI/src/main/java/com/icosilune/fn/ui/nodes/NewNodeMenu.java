@@ -5,11 +5,6 @@
  */
 package com.icosilune.fn.ui.nodes;
 
-import com.google.auto.value.AutoValue;
-import com.icosilune.fn.AbstractFn;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
@@ -21,30 +16,10 @@ import javax.swing.ListSelectionModel;
  */
 public class NewNodeMenu extends JPopupMenu {
 
-  public interface NodeKey {
-  }
-
-  @AutoValue
-  public static abstract class FnNodeKey implements NodeKey {
-    public abstract AbstractFn getFn();
-    public static FnNodeKey create(AbstractFn fn) {
-      return new AutoValue_NewNodeMenu_FnNodeKey(fn);
-    }
-
-    @Override
-    public String toString() {
-      return "Fn:"+getFn();
-    }
-
-    public static List<FnNodeKey> fromInstances(Collection<AbstractFn> fns) {
-      return fns.stream().map(FnNodeKey::create).collect(Collectors.toList());
-    }
-  }
-
   private JList list;
-  private NodeFactoryFactory nodeFactoryFactory;
+  private NodeFactory nodeFactory;
 
-  public NewNodeMenu(Iterable<? extends NodeKey> nodeKeys, NodeFactoryFactory nodeFactoryFactory) {
+  public NewNodeMenu(NodeFactory nodeFactory) {
     //add(new JLabel("eep"));
 
     // what is one of those list views that is a drop down that lets you search by typing?
@@ -57,7 +32,7 @@ public class NewNodeMenu extends JPopupMenu {
 //    });
 
     DefaultListModel listModel = new DefaultListModel();
-    for (NodeKey node: nodeKeys) {
+    for (NodeFactoryImpl.NodeKey node: nodeFactory.getNodeKeys()) {
       listModel.addElement(node);
     }
 
