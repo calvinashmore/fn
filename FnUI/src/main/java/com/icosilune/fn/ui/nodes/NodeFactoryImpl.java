@@ -12,9 +12,9 @@ import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
 import com.icosilune.fn.nodes.SinkNode;
-import com.icosilune.fn.ui.nodes.labels.HorizontalSliderLabelPanel;
-import com.icosilune.fn.ui.nodes.labels.SimpleNodeLabelPanel;
-import com.icosilune.fn.ui.nodes.labels.SinkNodeLabelPanel;
+import com.icosilune.fn.ui.nodes.labels.HorizontalSliderNodePanel;
+import com.icosilune.fn.ui.nodes.labels.SimpleNodePanel;
+import com.icosilune.fn.ui.nodes.labels.StringNodePanel;
 
 /**
  *
@@ -49,12 +49,12 @@ public class NodeFactoryImpl implements NodeFactory {
   @Override
   public NodePanel createPanelForNode(AbstractNode node) {
     if(node instanceof SinkNode) {
-      return new SinkNodeLabelPanel((SinkNode) node);
+      return new StringNodePanel((SinkNode) node);
     } else if(node instanceof ConstantNode
             && ((ConstantNode)node).getType().isAssignableFrom(FnType.fromString("double"))) {
-      return new HorizontalSliderLabelPanel((ConstantNode) node, -10, 10);
+      return new HorizontalSliderNodePanel((ConstantNode) node, -10, 10);
     } else {
-      return new SimpleNodeLabelPanel(node);
+      return new SimpleNodePanel(node);
     }
   }
 }

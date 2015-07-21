@@ -10,7 +10,6 @@ import com.icosilune.fn.ui.nodes.NodeContainerPanel;
 import com.icosilune.fn.ui.nodes.NewNodeMenu;
 import com.icosilune.fn.ui.nodes.SocketCirclePanel;
 import com.google.common.base.Preconditions;
-import com.icosilune.fn.AbstractFn;
 import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.Connection;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -18,14 +17,12 @@ import com.icosilune.fn.nodes.NodeGraph.NodeGraphListener;
 import com.icosilune.fn.nodes.NodeGraph.NodeChangeType;
 import com.icosilune.fn.nodes.NodeGraph.ConnectionChangeType;
 import com.icosilune.fn.ui.nodes.NodeFactory;
-import com.icosilune.fn.ui.nodes.NodeFactoryImpl;
 import com.icosilune.fn.ui.nodes.NodePanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JLayeredPane;
@@ -51,7 +48,8 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
     this.connectionRenderer = new ConnectionRenderer();
     this.circleMouseListener = new CircleMouseListener(nodeGraph);
     this.nodeFactory = nodeFactory;
-    this.newNodeMenu = new NewNodeMenu(nodeFactory);
+    this.newNodeMenu = new NewNodeMenu(nodeFactory,
+            (node, nodePanel, location) -> addNode(node, nodePanel, location));
 
     for(AbstractNode node : nodeGraph.getNodes()) {
       addNode(node);
@@ -86,15 +84,24 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
     }
   }
 
+  public void addNode(AbstractNode node, NodePanel nodePanel) {
+    addNode(node, nodePanel, new Point());
+  }
+
   /**
    * publicly visible way to add node panels.
    */
-  public void addNode(AbstractNode node, NodePanel nodePanel) {
+  public void addNode(AbstractNode node, NodePanel nodePanel, Point location) {
     Preconditions.checkArgument(nodePanel.getNode() == node);
     NodeContainerPanel nodeContainerPanel = new NodeContainerPanel(circleMouseListener, node, nodePanel);
     add(nodeContainerPanel, JLayeredPane.DEFAULT_LAYER);
     nodeContainerPanel.setSize(nodeContainerPanel.getPreferredSize());
+    nodeContainerPanel.setLocation(location);
     nodes.put(node,  nodeContainerPanel);
+    if (!nodeGraph.getNodes().contains(node)) {
+      nodeGraph.addNode(node);
+    }
+    validate();
   }
 
   private void removeNode(AbstractNode node) {

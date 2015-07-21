@@ -59,7 +59,7 @@ public class NodeGraph {
   /**
    * Called when the node has changed value outside the process of evaluation.
    */
-  void onNodeUpdated(AbstractNode node) {
+  public void onNodeUpdated(AbstractNode node) {
     // TODO: later this should just queue this node up,
     // so we don't necessarily update the whole graph when something changes (e.g.) in a UI thread.
     propagateChanges(ImmutableSet.of(node), new EvaluationContext());

@@ -5,25 +5,21 @@
  */
 package com.icosilune.fn.ui.nodes.labels;
 
-import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.SinkNode;
 import com.icosilune.fn.ui.nodes.NodePanel;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 /**
- *
- * @author ashmore
+ * NodePanel that displays a string representation of the value.
  */
-public class SinkNodeLabelPanel extends NodePanel {
+public class StringNodePanel extends NodePanel {
 
   private final JLabel mainLabel;
 
-  public SinkNodeLabelPanel(SinkNode node) {
+  public StringNodePanel(SinkNode node) {
     super(node);
     setBorder(new LineBorder(Color.DARK_GRAY, 2));
     add(mainLabel = new JLabel());

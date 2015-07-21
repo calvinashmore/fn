@@ -5,23 +5,21 @@
  */
 package com.icosilune.fn.ui.nodes.labels;
 
-import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
 
 /**
  *
  * @author ashmore
  */
-public class HorizontalSliderLabelPanel extends SimpleNodeLabelPanel {
+public class HorizontalSliderNodePanel extends SimpleNodePanel {
 
   private static final int MIN_SLIDER_VALUE = 0;
   private static final int MAX_SLIDER_VALUE = 100;
   private final double minValue;
   private final double maxValue;
 
-  public HorizontalSliderLabelPanel(ConstantNode node, double minValue, double maxValue) {
+  public HorizontalSliderNodePanel(ConstantNode node, double minValue, double maxValue) {
     super(node);
     this.minValue = minValue;
     this.maxValue = maxValue;

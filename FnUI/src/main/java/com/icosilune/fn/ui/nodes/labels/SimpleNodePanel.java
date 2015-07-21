@@ -15,9 +15,9 @@ import javax.swing.border.LineBorder;
  *
  * @author ashmore
  */
-public class SimpleNodeLabelPanel extends NodePanel {
+public class SimpleNodePanel extends NodePanel {
 
-  public SimpleNodeLabelPanel(AbstractNode node) {
+  public SimpleNodePanel(AbstractNode node) {
     super(node);
     setBorder(new LineBorder(Color.DARK_GRAY, 2));
     add(new JLabel(node.getName()));

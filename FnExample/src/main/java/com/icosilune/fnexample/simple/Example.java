@@ -48,12 +48,5 @@ public class Example {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();
     frame.setVisible(true);
-
-
-//    FnIndex index = new FnIndex.Builder().addPackage("com.icosilune.fnexample.simple").build();
-//    AbstractFn sum = Iterables.getOnlyElement(index.searchByClassName("Sum"));
-//    graph.addNode(new FnNode(graph, sum));
-    //graph.addNode(new ConstantNode(graph, FnType.fromString("String"), "oops"));
-//    graph.addNode(new FnNode(graph, new Fn_Multiply()));
   }
 }
