@@ -51,9 +51,9 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
     this.newNodeMenu = new NewNodeMenu(nodeFactory,
             (node, nodePanel, location) -> addNode(node, nodePanel, location));
 
-    for(AbstractNode node : nodeGraph.getNodes()) {
-      addNode(node);
-    }
+//    for(AbstractNode node : nodeGraph.getNodes()) {
+//      addNode(node);
+//    }
 
     nodeGraph.addListener(this);
     BackgroundMouseListener backgroundMouseListener = new BackgroundMouseListener();
@@ -68,7 +68,7 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   @Override
   public void nodeChanged(NodeGraph graph, AbstractNode node, NodeChangeType change) {
     if(change == NodeChangeType.ADDED) {
-      addNode(node);
+//      addNode(node);
     } else if(change == NodeChangeType.REMOVED) {
       removeNode(node);
     }
@@ -78,11 +78,11 @@ public class GraphPanel extends JLayeredPane implements NodeGraphListener {
   public void connectionChanged(NodeGraph graph, Connection node, ConnectionChangeType change) {
   }
 
-  private void addNode(AbstractNode node) {
-    if(nodes.get(node) == null) {
-      addNode(node, nodeFactory.createPanelForNode(node));
-    }
-  }
+//  private void addNode(AbstractNode node) {
+//    if(nodes.get(node) == null) {
+//      addNode(node, nodeFactory.createPanelForNode(node));
+//    }
+//  }
 
   public void addNode(AbstractNode node, NodePanel nodePanel) {
     addNode(node, nodePanel, new Point());

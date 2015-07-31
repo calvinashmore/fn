@@ -8,6 +8,7 @@ package com.icosilune.fn.nodes;
 import com.google.common.collect.Iterables;
 import com.google.common.truth.Truth;
 import com.icosilune.fn.AbstractFn;
+import com.icosilune.fn.EvaluationContext;
 import com.icosilune.fn.Fn;
 import com.icosilune.fn.FnIndex;
 import com.icosilune.fn.FnType;
@@ -31,13 +32,27 @@ public class NodeTest {
     }
   }
 
+  private static final class FakeContextFactory implements EvaluationContextFactory {
+    private static final EvaluationContext FAKE_EVALUATION_CONTEXT = new EvaluationContext() {
+      @Override
+      public Object getValue(String key) {
+        return null;
+      }
+    };
+
+    @Override
+    public EvaluationContext get() {
+      return FAKE_EVALUATION_CONTEXT;
+    }
+  }
+
   @Test
   public void testSum() {
     double in1 = 1.0;
     double in2 = 0.3;
 
     Fn_NodeTest_Sum sum = new Fn_NodeTest_Sum();
-    NodeGraph graph = new NodeGraph();
+    NodeGraph graph = new NodeGraph(new FakeContextFactory());
 
     AbstractNode constant1 = new ConstantNode(graph, FnType.fromString("double"), in1);
     AbstractNode constant2 = new ConstantNode(graph, FnType.fromString("double"), in2);

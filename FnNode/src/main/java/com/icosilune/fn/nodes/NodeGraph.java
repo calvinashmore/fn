@@ -9,12 +9,9 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import com.icosilune.fn.EvaluationContext;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,11 +22,12 @@ import java.util.stream.Collectors;
 public class NodeGraph {
 
   private final Set<NodeGraphListener> listeners = new HashSet<>();
-
   private final Set<AbstractNode> allNodes = new HashSet<>();
+  private final EvaluationContextFactory contextFactory;
 
-  // ?? what is an output node, really?
-//  private final List<AbstractNode> outputNodes = new ArrayList<>();
+  public NodeGraph(EvaluationContextFactory contextFactory) {
+    this.contextFactory = contextFactory;
+  }
 
   public void addListener(NodeGraphListener listener) {
     listeners.add(listener);
@@ -43,26 +41,13 @@ public class NodeGraph {
     return ImmutableSet.copyOf(allNodes);
   }
 
-  // *******
-  // Here's what we want to do:
-  // the evaluation context updates, then the input nodes update, and propagate their values downward.
-
-  // do not keep context, rather we evaluate the entire graph with a context
-  //private EvaluationContext context;
-
-  // getContextDependentNodes
-
-//  void evaluateGraph(EvaluationContext context) {
-//
-//  }
-
   /**
    * Called when the node has changed value outside the process of evaluation.
    */
   public void onNodeUpdated(AbstractNode node) {
     // TODO: later this should just queue this node up,
     // so we don't necessarily update the whole graph when something changes (e.g.) in a UI thread.
-    propagateChanges(ImmutableSet.of(node), new EvaluationContext());
+    propagateChanges(ImmutableSet.of(node), contextFactory.get());
   }
 
   public void addConnection(NodeAndSocket socket1, NodeAndSocket socket2) {
@@ -86,7 +71,7 @@ public class NodeGraph {
   public void addConnection(AbstractNode inNode, AbstractNode outNode, String outputSocketName, String inputSocketName) {
     inNode.addInputConnection(outNode, outputSocketName, inputSocketName);
 
-    propagateChanges(ImmutableSet.of(inNode), new EvaluationContext());
+    propagateChanges(ImmutableSet.of(inNode), contextFactory.get());
   }
 
   public void addNode(AbstractNode node) {
@@ -112,7 +97,6 @@ public class NodeGraph {
     SetMultimap<AbstractNode, AbstractNode> downstreamConnections = HashMultimap.create();
     for (AbstractNode node : allNodes) {
       for (Connection connection : node.getInputConnections().values()) {
-//        downstreamConnections.put(connection.getInputNode(), connection.getOutputNode());
         downstreamConnections.put(connection.getOutputNode(), connection.getInputNode());
       }
     }
@@ -123,11 +107,12 @@ public class NodeGraph {
    * Updates all context dependent nodes, and propagates values downward.
    */
   public void step() {
+    // TODO: also handle cycles
     Set<AbstractNode> contextDependentNodes = allNodes.stream()
             .filter(AbstractNode::isContextDependent)
             .collect(Collectors.toSet());
 
-    propagateChanges(contextDependentNodes, new EvaluationContext());
+    propagateChanges(contextDependentNodes, contextFactory.get());
   }
 
   private void propagateChanges(Set<AbstractNode> changedNodes, EvaluationContext context) {

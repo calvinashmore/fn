@@ -8,6 +8,7 @@ package com.icosilune.fn.ui.nodes;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.icosilune.fn.AbstractFn;
+import com.icosilune.fn.FnType;
 import com.icosilune.fn.nodes.AbstractNode;
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +22,7 @@ public interface NodeFactory {
 
   NodeAndPanel createNode(NodeKey key);
 
-  NodePanel createPanelForNode(AbstractNode node);
-
   ImmutableList<? extends NodeKey> getNodeKeys();
-
 
   @AutoValue
   public static abstract class NodeAndPanel {
@@ -52,6 +50,31 @@ public interface NodeFactory {
 
     public static List<FnNodeKey> fromInstances(Collection<AbstractFn> fns) {
       return fns.stream().map(FnNodeKey::create).collect(Collectors.toList());
+    }
+  }
+
+  @AutoValue
+  public static abstract class ConstantNodeKey implements NodeKey {
+    public abstract FnType getType();
+    public abstract Object getInitialValue();
+    public static ConstantNodeKey create(FnType type, Object initialValue) {
+      return new AutoValue_NodeFactory_ConstantNodeKey(type, initialValue);
+    }
+    @Override
+    public String toString() {
+      return "constant: "+getType().getTypeString();
+    }
+  }
+
+  @AutoValue
+  public static abstract class SinkNodeKey implements NodeKey {
+    public abstract FnType getType();
+    public static SinkNodeKey create(FnType type) {
+      return new AutoValue_NodeFactory_SinkNodeKey(type);
+    }
+    @Override
+    public String toString() {
+      return "sink: "+ getType().getTypeString();
     }
   }
 }

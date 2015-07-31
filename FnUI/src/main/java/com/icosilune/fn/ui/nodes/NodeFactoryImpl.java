@@ -7,7 +7,6 @@ package com.icosilune.fn.ui.nodes;
 
 import com.google.common.collect.ImmutableList;
 import com.icosilune.fn.FnType;
-import com.icosilune.fn.nodes.AbstractNode;
 import com.icosilune.fn.nodes.ConstantNode;
 import com.icosilune.fn.nodes.FnNode;
 import com.icosilune.fn.nodes.NodeGraph;
@@ -35,26 +34,31 @@ public class NodeFactoryImpl implements NodeFactory {
     return nodeKeys;
   }
 
+  /**
+   * This should be overridden by subclasses to make custom node types.
+   */
   @Override
   public NodeAndPanel createNode(NodeKey key) {
     if(key instanceof FnNodeKey) {
       FnNodeKey fnKey = (FnNodeKey) key;
       FnNode fnNode  = new FnNode(nodeGraph, fnKey.getFn());
-      return NodeAndPanel.create(fnNode, createPanelForNode(fnNode));
+      return NodeAndPanel.create(fnNode, new SimpleNodePanel(fnNode));
+    } else if(key instanceof ConstantNodeKey) {
+      ConstantNodeKey constantKey = (ConstantNodeKey) key;
+      ConstantNode node = new ConstantNode(nodeGraph, constantKey.getType(), constantKey.getInitialValue());
+      NodePanel panel;
+      if(node.getType().isAssignableFrom(FnType.fromString("double"))) {
+        panel = new HorizontalSliderNodePanel((ConstantNode) node, -10, 10);
+      } else {
+        panel = new SimpleNodePanel(node);
+      }
+      return NodeAndPanel.create(node, panel);
+    } else if(key instanceof SinkNodeKey) {
+      SinkNodeKey sinkNodeKey = (SinkNodeKey) key;
+      SinkNode node = new SinkNode(nodeGraph, sinkNodeKey.getType());
+      return NodeAndPanel.create(node, new StringNodePanel(node));
     } else {
       throw new IllegalArgumentException("Unsupported node key: "+key);
-    }
-  }
-
-  @Override
-  public NodePanel createPanelForNode(AbstractNode node) {
-    if(node instanceof SinkNode) {
-      return new StringNodePanel((SinkNode) node);
-    } else if(node instanceof ConstantNode
-            && ((ConstantNode)node).getType().isAssignableFrom(FnType.fromString("double"))) {
-      return new HorizontalSliderNodePanel((ConstantNode) node, -10, 10);
-    } else {
-      return new SimpleNodePanel(node);
     }
   }
 }

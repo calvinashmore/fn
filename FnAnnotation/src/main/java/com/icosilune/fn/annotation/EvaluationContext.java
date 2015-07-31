@@ -10,6 +10,7 @@ package com.icosilune.fn;
   * local variables, or other such things.
   *
   */
-public class EvaluationContext {
+public interface EvaluationContext {
 
+  public Object getValue(String key);
 }

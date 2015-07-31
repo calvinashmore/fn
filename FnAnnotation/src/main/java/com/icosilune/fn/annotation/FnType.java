@@ -17,9 +17,10 @@ import org.jparsec.java.TypeParser;
 public abstract class FnType {
 
   public abstract TypeToken<?> getType();
+  public abstract String getTypeString();
 
   public static FnType fromString(String s) {
-    return new AutoValue_FnType(new TypeParser().parse(s));
+    return new AutoValue_FnType(new TypeParser().parse(s), s);
   }
 
   public boolean isIterable() {
